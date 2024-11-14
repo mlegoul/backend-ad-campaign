@@ -70,3 +70,26 @@ func (h *CampaignHandler) HandleDeleteCampaign(w http.ResponseWriter, r *http.Re
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (h *CampaignHandler) HandleUpdateCampaign(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var campaign core.Campaign
+	err := json.NewDecoder(r.Body).Decode(&campaign)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	campaign.ID = id
+
+	updatedCampaign, err := h.Service.UpdateCampaign(&campaign)
+	if err != nil {
+		http.Error(w, "Error updating campaign", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(updatedCampaign)
+}

@@ -27,6 +27,7 @@ func main() {
 	router.HandleFunc("/campaigns", handler.HandleCreateCampaign).Methods("POST")
 	router.HandleFunc("/campaigns/{id}", handler.HandleGetCampaignByID).Methods("GET")
 	router.HandleFunc("/campaigns/{id}", handler.HandleDeleteCampaign).Methods("DELETE")
+	router.HandleFunc("/campaigns/{id}", handler.HandleUpdateCampaign).Methods("PUT") // Route PUT pour mise à jour
 
 	router.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Server is running"))
