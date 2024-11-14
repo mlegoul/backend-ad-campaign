@@ -16,11 +16,11 @@ type Campaign struct {
 }
 
 func (c *Campaign) UnmarshalJSON(data []byte) error {
-	// Unmarshal the JSON with custom date format
 	type Alias Campaign
 	aux := &struct {
-		StartDate string `json:"start_date"`
-		EndDate   string `json:"end_date"`
+		StartDate    string  `json:"start_date"`
+		EndDate      string  `json:"end_date"`
+		PricePerView float64 `json:"price_per_view"` // Ajouter ici le champ price_per_view
 		*Alias
 	}{
 		Alias: (*Alias)(c),
@@ -30,7 +30,6 @@ func (c *Campaign) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	// Parse the custom date format
 	layout := "2006-01-02"
 	startDate, err := time.Parse(layout, aux.StartDate)
 	if err != nil {
@@ -44,5 +43,18 @@ func (c *Campaign) UnmarshalJSON(data []byte) error {
 	}
 	c.EndDate = endDate
 
+	if aux.PricePerView == 0 {
+		c.PricePerView = calculatePricePerView(c.Budget, c.TargetViews)
+	} else {
+		c.PricePerView = aux.PricePerView
+	}
+
 	return nil
+}
+
+func calculatePricePerView(budget float64, targetViews int) float64 {
+	if targetViews == 0 {
+		return 0 // éviter la division par zéro
+	}
+	return budget / float64(targetViews)
 }
