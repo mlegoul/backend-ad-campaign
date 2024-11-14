@@ -8,4 +8,5 @@ type Repository interface {
 	GetAllCampaigns() ([]*core.Campaign, error)
 	DeleteCampaign(id string) error
 	UpdateCampaign(campaign *core.Campaign) (*core.Campaign, error)
+	SearchCampaignByName(name string) ([]*core.Campaign, error)
 }

@@ -24,11 +24,12 @@ func main() {
 	handler := api.NewCampaignHandler(repo)
 
 	router := mux.NewRouter()
+	router.HandleFunc("/campaigns/search", handler.HandleSearchCampaignByName).Methods("GET")
 	router.HandleFunc("/campaigns", handler.HandleCreateCampaign).Methods("POST")
 	router.HandleFunc("/campaigns/{id}", handler.HandleGetCampaignByID).Methods("GET")
 	router.HandleFunc("/campaigns", handler.HandleGetAllCampaigns).Methods("GET")
 	router.HandleFunc("/campaigns/{id}", handler.HandleDeleteCampaign).Methods("DELETE")
-	router.HandleFunc("/campaigns/{id}", handler.HandleUpdateCampaign).Methods("PUT") // Route PUT pour mise à jour
+	router.HandleFunc("/campaigns/{id}", handler.HandleUpdateCampaign).Methods("PUT")
 
 	router.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Server is running"))

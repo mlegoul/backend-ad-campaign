@@ -104,3 +104,21 @@ func (h *CampaignHandler) HandleUpdateCampaign(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(updatedCampaign)
 }
+
+func (h *CampaignHandler) HandleSearchCampaignByName(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+
+	if name == "" {
+		http.Error(w, "Campaign name is required", http.StatusBadRequest)
+		return
+	}
+
+	campaigns, err := h.Service.SearchCampaignByName(name)
+	if err != nil {
+		http.Error(w, "Error searching campaign", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(campaigns)
+}
