@@ -58,6 +58,17 @@ func (h *CampaignHandler) HandleGetCampaignByID(w http.ResponseWriter, r *http.R
 	json.NewEncoder(w).Encode(campaign)
 }
 
+func (h *CampaignHandler) HandleGetAllCampaigns(w http.ResponseWriter, r *http.Request) {
+	campaigns, err := h.Service.GetAllCampaigns()
+	if err != nil {
+		http.Error(w, "Error retrieving campaigns", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(campaigns)
+}
+
 func (h *CampaignHandler) HandleDeleteCampaign(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]

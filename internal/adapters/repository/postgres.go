@@ -42,6 +42,26 @@ func (r *PostgresRepository) GetCampaignByID(id string) (*core.Campaign, error) 
 	return &campaign, nil
 }
 
+func (r *PostgresRepository) GetAllCampaigns() ([]*core.Campaign, error) {
+	query := `SELECT id, name, start_date, end_date, budget, target_views, price_per_view FROM campaigns`
+	rows, err := r.DB.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving campaigns: %v", err)
+	}
+	defer rows.Close()
+
+	var campaigns []*core.Campaign
+	for rows.Next() {
+		var campaign core.Campaign
+		if err := rows.Scan(&campaign.ID, &campaign.Name, &campaign.StartDate, &campaign.EndDate, &campaign.Budget, &campaign.TargetViews, &campaign.PricePerView); err != nil {
+			return nil, fmt.Errorf("error scanning campaign: %v", err)
+		}
+		campaigns = append(campaigns, &campaign)
+	}
+
+	return campaigns, nil
+}
+
 func (r *PostgresRepository) DeleteCampaign(id string) error {
 	query := `DELETE FROM campaigns WHERE id = $1`
 	result, err := r.DB.Exec(query, id)
