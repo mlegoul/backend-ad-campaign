@@ -27,7 +27,6 @@ func (h *CampaignHandler) HandleCreateCampaign(w http.ResponseWriter, r *http.Re
 	}
 	log.Printf("Received campaign: %+v", campaign)
 
-	// Si price_per_view est 0 ou non défini, on le calcule à partir du budget et des affichages
 	if campaign.PricePerView == 0 {
 		campaign.PricePerView = campaign.Budget / float64(campaign.TargetViews)
 	}
@@ -43,23 +42,31 @@ func (h *CampaignHandler) HandleCreateCampaign(w http.ResponseWriter, r *http.Re
 }
 
 func (h *CampaignHandler) HandleGetCampaignByID(w http.ResponseWriter, r *http.Request) {
-	// Récupérer l'ID depuis les paramètres de la route
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	// Log de l'ID reçu
 	log.Printf("Received request to get campaign with ID: %s", id)
 
-	// Utiliser le repository pour récupérer la campagne
 	campaign, err := h.Service.GetCampaignByID(id)
 	if err != nil {
-		// Log de l'erreur
 		log.Printf("Error retrieving campaign: %v", err)
 		http.Error(w, "Campaign not found", http.StatusNotFound)
 		return
 	}
 
-	// Retourner la campagne trouvée en JSON
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(campaign)
+}
+
+func (h *CampaignHandler) HandleDeleteCampaign(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err := h.Service.DeleteCampaign(id)
+	if err != nil {
+		http.Error(w, "Campaign not found or unable to delete", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

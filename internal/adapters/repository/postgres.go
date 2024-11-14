@@ -41,3 +41,21 @@ func (r *PostgresRepository) GetCampaignByID(id string) (*core.Campaign, error) 
 
 	return &campaign, nil
 }
+
+func (r *PostgresRepository) DeleteCampaign(id string) error {
+	query := `DELETE FROM campaigns WHERE id = $1`
+	result, err := r.DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("Error deleting campaign: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Error checking rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("Campaign with ID %s not found", id)
+	}
+
+	return nil
+}

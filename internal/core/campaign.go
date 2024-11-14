@@ -20,7 +20,7 @@ func (c *Campaign) UnmarshalJSON(data []byte) error {
 	aux := &struct {
 		StartDate    string  `json:"start_date"`
 		EndDate      string  `json:"end_date"`
-		PricePerView float64 `json:"price_per_view"` // Ajouter ici le champ price_per_view
+		PricePerView float64 `json:"price_per_view"`
 		*Alias
 	}{
 		Alias: (*Alias)(c),
@@ -54,7 +54,7 @@ func (c *Campaign) UnmarshalJSON(data []byte) error {
 
 func calculatePricePerView(budget float64, targetViews int) float64 {
 	if targetViews == 0 {
-		return 0 // éviter la division par zéro
+		return 0
 	}
 	return budget / float64(targetViews)
 }
