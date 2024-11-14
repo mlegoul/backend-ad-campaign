@@ -122,3 +122,14 @@ func (h *CampaignHandler) HandleSearchCampaignByName(w http.ResponseWriter, r *h
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(campaigns)
 }
+
+func (h *CampaignHandler) HandleGetActiveCampaigns(w http.ResponseWriter, r *http.Request) {
+	campaigns, err := h.Service.GetActiveCampaigns()
+	if err != nil {
+		http.Error(w, "Error retrieving active campaigns", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(campaigns)
+}

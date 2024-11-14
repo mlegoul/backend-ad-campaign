@@ -24,6 +24,7 @@ func main() {
 	handler := api.NewCampaignHandler(repo)
 
 	router := mux.NewRouter()
+	router.HandleFunc("/campaigns/active", handler.HandleGetActiveCampaigns).Methods("GET")
 	router.HandleFunc("/campaigns/search", handler.HandleSearchCampaignByName).Methods("GET")
 	router.HandleFunc("/campaigns", handler.HandleCreateCampaign).Methods("POST")
 	router.HandleFunc("/campaigns/{id}", handler.HandleGetCampaignByID).Methods("GET")

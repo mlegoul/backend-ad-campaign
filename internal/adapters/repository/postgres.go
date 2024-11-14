@@ -117,3 +117,28 @@ func (r *PostgresRepository) SearchCampaignByName(name string) ([]*core.Campaign
 
 	return campaigns, nil
 }
+
+func (r *PostgresRepository) GetActiveCampaigns() ([]*core.Campaign, error) {
+	var campaigns []*core.Campaign
+	query := "SELECT * FROM campaigns WHERE start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE"
+	rows, err := r.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var c core.Campaign
+		err := rows.Scan(&c.ID, &c.Name, &c.StartDate, &c.EndDate, &c.Budget, &c.TargetViews, &c.PricePerView)
+		if err != nil {
+			return nil, err
+		}
+		campaigns = append(campaigns, &c)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return campaigns, nil
+}
