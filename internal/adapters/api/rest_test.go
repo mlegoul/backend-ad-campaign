@@ -15,18 +15,6 @@ type MockRepository struct {
 	campaigns map[string]core.Campaign
 }
 
-func (m *MockRepository) UpdateCampaign(campaign *core.Campaign) (*core.Campaign, error) {
-	panic("implement me")
-}
-
-func (m *MockRepository) SearchCampaignByName(name string) ([]*core.Campaign, error) {
-	panic("implement me")
-}
-
-func (m *MockRepository) GetActiveCampaigns() ([]*core.Campaign, error) {
-	panic("implement me")
-}
-
 func (m *MockRepository) GetCampaignByID(id string) (*core.Campaign, error) {
 	if campaign, exists := m.campaigns[id]; exists {
 		return &campaign, nil
